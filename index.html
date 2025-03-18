@@ -103,15 +103,17 @@
         <table id="propertyTable">
             <thead>
                 <tr>
-                    <th>Distance</th>
-                    <th>Property Link 1</th>
-                    <th>Property Link 2</th>
-                    <th>Property 1 Bedrooms</th>
-                    <th>Property 1 Bathrooms</th>
-                    <th>Property 1 Type</th>
-                    <th>Property 2 Bedrooms</th>
-                    <th>Property 2 Bathrooms</th>
-                    <th>Property 2 Type</th>
+                    <th>Distance (miles)</th>
+                    <th>Property URL 1</th>
+                    <th>Property URL 2</th>
+                    <th>Property 1 - Bedrooms</th>
+                    <th>Property 1 - Bathrooms</th>
+                    <th>Property 1 - Type</th>
+                    <th>Property 1 - Rent (USD)</th>
+                    <th>Property 2 - Bedrooms</th>
+                    <th>Property 2 - Bathrooms</th>
+                    <th>Property 2 - Type</th>
+                    <th>Property 2 - Rent (USD)</th>
                 </tr>
             </thead>
             <tbody>
@@ -149,15 +151,17 @@
 
             data.forEach(row => {
                 const tr = $('<tr></tr>');
-                tr.append(`<td>${row.Distance}</td>`);
-                tr.append(`<td><a href="#">${row['Property Link 1']}</a></td>`);
-                tr.append(`<td><a href="#">${row['Property Link 2']}</a></td>`);
-                tr.append(`<td>${row['Property 1 Bedrooms']}</td>`);
-                tr.append(`<td>${row['Property 1 Bathrooms']}</td>`);
-                tr.append(`<td>${row['Property 1 Type']}</td>`);
-                tr.append(`<td>${row['Property 2 Bedrooms']}</td>`);
-                tr.append(`<td>${row['Property 2 Bathrooms']}</td>`);
-                tr.append(`<td>${row['Property 2 Type']}</td>`);
+                tr.append(`<td>${row['Distance (miles)']}</td>`);
+                tr.append(`<td><a href="#">${row['Property URL 1']}</a></td>`);
+                tr.append(`<td><a href="#">${row['Property URL 2']}</a></td>`);
+                tr.append(`<td>${row['Property 1 - Bedrooms']}</td>`);
+                tr.append(`<td>${row['Property 1 - Bathrooms']}</td>`);
+                tr.append(`<td>${row['Property 1 - Type']}</td>`);
+                tr.append(`<td>${row['Property 1 - Rent (USD)']}</td>`);
+                tr.append(`<td>${row['Property 2 - Bedrooms']}</td>`);
+                tr.append(`<td>${row['Property 2 - Bathrooms']}</td>`);
+                tr.append(`<td>${row['Property 2 - Type']}</td>`);
+                tr.append(`<td>${row['Property 2 - Rent (USD)']}</td>`);
                 tableBody.append(tr);
             });
         }
