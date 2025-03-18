@@ -1,23 +1,212 @@
----
-layout: post
-title: Stonks
----
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Distance Results</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* General Reset and Body */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f7fa;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
 
+        /* Container */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        header h1 {
+            font-size: 2em;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table th,
+        table td {
+            padding: 12px 15px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        table th {
+            background-color: #007bff;
+            color: white;
+            font-weight: 600;
+        }
+        table td {
+            background-color: #f9f9f9;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            table th, table td {
+                padding: 8px 10px;
+            }
+            table {
+                font-size: 14px;
+            }
+        }
+
+        /* Pagination */
+        .pagination {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .pagination a {
+            margin: 0 5px;
+            padding: 8px 12px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .pagination a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
 <body>
-<p><a href="https://github.com/tjblue">Github</a></p><br>
-<p><a href="https://linkedin.com/in/tylerblue2023">LinkedIn</a></p><br>
-<p><a href="https://instagram.com/tyler">Instagram</a></p><br>
 
-<p>
-my email is tjblue2@asu.edu
+    <div class="container">
+        <header>
+            <h1>Property Distance Results</h1>
+        </header>
 
-and my phone number is <a href="tel:6027935878">6027935878</a>
-</p>
+        <!-- Table to display CSV data -->
+        <table id="results-table">
+            <thead>
+                <tr>
+                    <th>Distance (miles)</th>
+                    <th>Property URL 1</th>
+                    <th>Property URL 2</th>
+                    <th>Property 1 - Bedrooms</th>
+                    <th>Property 1 - Bathrooms</th>
+                    <th>Property 1 - Type</th>
+                    <th>Property 1 - Rent (USD)</th>
+                    <th>Property 2 - Bedrooms</th>
+                    <th>Property 2 - Bathrooms</th>
+                    <th>Property 2 - Type</th>
+                    <th>Property 2 - Rent (USD)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data will be inserted here via JavaScript -->
+            </tbody>
+        </table>
 
-<br>
-Phone is (602)793-5878
-<br>
-I am good at Python, Java, SQL, and Javascript, .NET, C++, C#, C, and CSS
+        <!-- Pagination -->
+        <div class="pagination" id="pagination"></div>
+    </div>
+
+    <script>
+        // Fetch CSV file and parse it
+        async function loadCSV() {
+            const response = await fetch('distance_results.csv');  // Path to your CSV file
+            const text = await response.text();
+            const rows = text.split('\n').slice(1);  // Skip the header row
+
+            const data = rows.map(row => {
+                const cols = row.split(',');
+                return {
+                    distance: cols[0],
+                    link1: cols[1],
+                    link2: cols[2],
+                    p1_bedrooms: cols[3],
+                    p1_bathrooms: cols[4],
+                    p1_type: cols[5],
+                    p1_rent: cols[6],
+                    p2_bedrooms: cols[7],
+                    p2_bathrooms: cols[8],
+                    p2_type: cols[9],
+                    p2_rent: cols[10]
+                };
+            });
+
+            displayData(data);
+        }
+
+        // Function to display the table data
+        function displayData(data) {
+            const tableBody = document.getElementById('results-table').getElementsByTagName('tbody')[0];
+            tableBody.innerHTML = '';  // Clear the table before appending data
+
+            // Pagination variables
+            const rowsPerPage = 10;
+            let currentPage = 1;
+            const totalPages = Math.ceil(data.length / rowsPerPage);
+
+            // Function to display the current page of data
+            function displayPage(page) {
+                const startIndex = (page - 1) * rowsPerPage;
+                const endIndex = Math.min(startIndex + rowsPerPage, data.length);
+                const pageData = data.slice(startIndex, endIndex);
+
+                // Populate table rows
+                pageData.forEach(row => {
+                    const newRow = tableBody.insertRow();
+                    Object.values(row).forEach(text => {
+                        const cell = newRow.insertCell();
+                        cell.textContent = text;
+                    });
+                });
+
+                // Update pagination
+                updatePagination(page);
+            }
+
+            // Update pagination controls
+            function updatePagination(page) {
+                const pagination = document.getElementById('pagination');
+                pagination.innerHTML = '';
+
+                for (let i = 1; i <= totalPages; i++) {
+                    const pageLink = document.createElement('a');
+                    pageLink.href = '#';
+                    pageLink.textContent = i;
+                    pageLink.onclick = () => {
+                        currentPage = i;
+                        displayPage(i);
+                    };
+                    pagination.appendChild(pageLink);
+                }
+            }
+
+            // Display the first page of data
+            displayPage(currentPage);
+        }
+
+        // Load the CSV when the page is loaded
+        window.onload = loadCSV;
+    </script>
+
 </body>
 </html>
