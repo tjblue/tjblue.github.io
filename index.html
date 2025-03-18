@@ -19,23 +19,20 @@
             color: #333;
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* Align content to the top */
+            align-items: flex-start;
             height: 100vh;
             padding: 20px;
-            overflow-y: auto; /* Ensure that vertical scrolling works */
         }
 
         /* Container */
         .container {
             width: 100%;
             max-width: 1200px;
-            margin: 0 auto; /* Center the table horizontally */
+            margin: 0 auto;
             background: #fff;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            overflow-x: auto; /* Allow horizontal scrolling */
-            margin-top: 0; /* Ensure no margin at the top */
         }
 
         /* Header */
@@ -53,7 +50,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 0; /* Remove any top margin */
+            margin-top: 0;
         }
 
         table th,
@@ -61,6 +58,7 @@
             padding: 12px 15px;
             text-align: left;
             border: 1px solid #ddd;
+            word-wrap: break-word;  /* Ensure long words wrap properly */
         }
 
         /* Sticky Header */
@@ -69,10 +67,10 @@
             color: white;
             font-weight: 600;
             position: sticky;
-            top: 0; /* Sticky header at the top of the table */
-            z-index: 2; /* Ensures header stays above content */
+            top: 0;
+            z-index: 2;
             text-align: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Shadow for visibility */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         /* Table rows */
@@ -118,6 +116,29 @@
             </thead>
             <tbody>
                 <!-- Data rows will go here -->
+                <tr>
+                    <td>1.2 miles</td>
+                    <td><a href="#">Link 1</a></td>
+                    <td><a href="#">Link 2</a></td>
+                    <td>2</td>
+                    <td>2</td>
+                    <td>Apartment</td>
+                    <td>3</td>
+                    <td>2</td>
+                    <td>House</td>
+                </tr>
+                <tr>
+                    <td>2.3 miles</td>
+                    <td><a href="#">Link 3</a></td>
+                    <td><a href="#">Link 4</a></td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>Condo</td>
+                    <td>4</td>
+                    <td>3</td>
+                    <td>Townhouse</td>
+                </tr>
+                <!-- More rows can be added here -->
             </tbody>
         </table>
     </div>
