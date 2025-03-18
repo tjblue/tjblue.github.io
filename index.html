@@ -45,6 +45,20 @@
             color: #333;
         }
 
+        /* Search Input */
+        .search-input {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .search-input input {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
         /* Table Styling */
         table {
             width: 100%;
@@ -76,22 +90,6 @@
             }
         }
 
-        /* Pagination */
-        .pagination {
-            margin-top: 20px;
-            text-align: center;
-        }
-        .pagination a {
-            margin: 0 5px;
-            padding: 8px 12px;
-            background-color: #007bff;
-            color: white;
-            border-radius: 5px;
-            text-decoration: none;
-        }
-        .pagination a:hover {
-            background-color: #0056b3;
-        }
     </style>
 </head>
 <body>
@@ -100,6 +98,11 @@
         <header>
             <h1>Property Distance Results</h1>
         </header>
+
+        <!-- Search Input -->
+        <div class="search-input">
+            <input type="text" id="search" placeholder="Search properties..." onkeyup="filterTable()">
+        </div>
 
         <!-- Table to display CSV data -->
         <table id="results-table">
@@ -122,9 +125,6 @@
                 <!-- Data will be inserted here via JavaScript -->
             </tbody>
         </table>
-
-        <!-- Pagination -->
-        <div class="pagination" id="pagination"></div>
     </div>
 
     <script>
@@ -159,49 +159,43 @@
             const tableBody = document.getElementById('results-table').getElementsByTagName('tbody')[0];
             tableBody.innerHTML = '';  // Clear the table before appending data
 
-            // Pagination variables
-            const rowsPerPage = 10;
-            let currentPage = 1;
-            const totalPages = Math.ceil(data.length / rowsPerPage);
-
-            // Function to display the current page of data
-            function displayPage(page) {
-                const startIndex = (page - 1) * rowsPerPage;
-                const endIndex = Math.min(startIndex + rowsPerPage, data.length);
-                const pageData = data.slice(startIndex, endIndex);
-
-                // Populate table rows
-                pageData.forEach(row => {
-                    const newRow = tableBody.insertRow();
-                    Object.values(row).forEach(text => {
-                        const cell = newRow.insertCell();
-                        cell.textContent = text;
-                    });
+            // Populate table rows
+            data.forEach(row => {
+                const newRow = tableBody.insertRow();
+                Object.values(row).forEach(text => {
+                    const cell = newRow.insertCell();
+                    cell.textContent = text;
                 });
+            });
+        }
 
-                // Update pagination
-                updatePagination(page);
-            }
+        // Function to filter the table based on the search input
+        function filterTable() {
+            const input = document.getElementById('search');
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById('results-table');
+            const rows = table.getElementsByTagName('tr');
 
-            // Update pagination controls
-            function updatePagination(page) {
-                const pagination = document.getElementById('pagination');
-                pagination.innerHTML = '';
+            // Loop through all table rows and hide those that don't match the search query
+            for (let i = 1; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                let match = false;
 
-                for (let i = 1; i <= totalPages; i++) {
-                    const pageLink = document.createElement('a');
-                    pageLink.href = '#';
-                    pageLink.textContent = i;
-                    pageLink.onclick = () => {
-                        currentPage = i;
-                        displayPage(i);
-                    };
-                    pagination.appendChild(pageLink);
+                // Check if any cell in the row contains the search query
+                for (let j = 0; j < cells.length; j++) {
+                    if (cells[j].textContent.toLowerCase().indexOf(filter) > -1) {
+                        match = true;
+                        break;
+                    }
+                }
+
+                // Hide or show the row based on the match
+                if (match) {
+                    rows[i].style.display = '';
+                } else {
+                    rows[i].style.display = 'none';
                 }
             }
-
-            // Display the first page of data
-            displayPage(currentPage);
         }
 
         // Load the CSV when the page is loaded
