@@ -22,7 +22,7 @@
             height: 100vh;
             padding: 20px;
         }
-
+        
         /* Container */
         .container {
             width: 100%;
@@ -32,8 +32,9 @@
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             padding: 20px;
+            overflow-x: auto; /* This will allow horizontal scrolling if needed */
         }
-
+        
         /* Header */
         header {
             text-align: center;
@@ -44,7 +45,7 @@
             font-weight: 600;
             color: #333;
         }
-
+        
         /* Search Input */
         .search-input {
             margin-bottom: 20px;
@@ -58,28 +59,37 @@
             border-radius: 5px;
             margin-top: 10px;
         }
-
+        
         /* Table Styling */
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            margin-left: auto;
+            margin-right: auto;
         }
+        
         table th,
         table td {
             padding: 12px 15px;
             text-align: left;
             border: 1px solid #ddd;
         }
+        
+        /* Sticky Header */
         table th {
             background-color: #007bff;
             color: white;
             font-weight: 600;
+            position: sticky;
+            top: 0; /* This keeps the header at the top while scrolling */
+            z-index: 1; /* Ensures the header stays on top of the table body */
         }
+        
         table td {
             background-color: #f9f9f9;
         }
-
+        
         /* Responsive Design */
         @media (max-width: 768px) {
             table th, table td {
@@ -89,6 +99,8 @@
                 font-size: 14px;
             }
         }
+        
+
 
     </style>
 </head>
