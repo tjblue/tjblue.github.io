@@ -58,7 +58,7 @@
             padding: 12px 15px;
             text-align: left;
             border: 1px solid #ddd;
-            word-wrap: break-word;  /* Ensure long words wrap properly */
+            word-wrap: break-word;
         }
 
         /* Sticky Header */
@@ -115,30 +115,7 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Data rows will go here -->
-                <tr>
-                    <td>1.2 miles</td>
-                    <td><a href="#">Link 1</a></td>
-                    <td><a href="#">Link 2</a></td>
-                    <td>2</td>
-                    <td>2</td>
-                    <td>Apartment</td>
-                    <td>3</td>
-                    <td>2</td>
-                    <td>House</td>
-                </tr>
-                <tr>
-                    <td>2.3 miles</td>
-                    <td><a href="#">Link 3</a></td>
-                    <td><a href="#">Link 4</a></td>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>Condo</td>
-                    <td>4</td>
-                    <td>3</td>
-                    <td>Townhouse</td>
-                </tr>
-                <!-- More rows can be added here -->
+                <!-- Data rows will be dynamically inserted here -->
             </tbody>
         </table>
     </div>
@@ -148,12 +125,61 @@
     <script src="https://cdn.jsdelivr.net/npm/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
 
     <script>
-        // Initialize DataTable with search and filter options
+        // Sample data from your CSV, you can fetch this from a file or API
+        const propertyData = [
+            {
+                distance: "1.2 miles",
+                link1: "<a href='#'>Property 1</a>",
+                link2: "<a href='#'>Property 2</a>",
+                bedrooms1: 2,
+                bathrooms1: 2,
+                type1: "Apartment",
+                bedrooms2: 3,
+                bathrooms2: 2,
+                type2: "House"
+            },
+            {
+                distance: "2.3 miles",
+                link1: "<a href='#'>Property 3</a>",
+                link2: "<a href='#'>Property 4</a>",
+                bedrooms1: 1,
+                bathrooms1: 1,
+                type1: "Condo",
+                bedrooms2: 4,
+                bathrooms2: 3,
+                type2: "Townhouse"
+            }
+            // Add more rows here
+        ];
+
+        // Populate the table with data
+        function populateTable(data) {
+            const tableBody = $('#propertyTable tbody');
+            data.forEach(row => {
+                const tr = $('<tr></tr>');
+                tr.append(`<td>${row.distance}</td>`);
+                tr.append(`<td>${row.link1}</td>`);
+                tr.append(`<td>${row.link2}</td>`);
+                tr.append(`<td>${row.bedrooms1}</td>`);
+                tr.append(`<td>${row.bathrooms1}</td>`);
+                tr.append(`<td>${row.type1}</td>`);
+                tr.append(`<td>${row.bedrooms2}</td>`);
+                tr.append(`<td>${row.bathrooms2}</td>`);
+                tr.append(`<td>${row.type2}</td>`);
+                tableBody.append(tr);
+            });
+        }
+
+        // Initialize DataTable and populate table
         $(document).ready(function() {
+            // Populate the table with data
+            populateTable(propertyData);
+
+            // Initialize DataTable with search and filter options
             $('#propertyTable').DataTable({
-                paging: true,  // Enable pagination
-                searching: true,  // Enable filtering
-                order: []  // Don't apply any default sorting
+                paging: true,
+                searching: true,
+                order: []
             });
         });
     </script>
