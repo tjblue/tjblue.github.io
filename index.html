@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         /* General Reset and Body */
-       /* General Reset and Body */
+/* General Reset and Body */
 * {
     margin: 0;
     padding: 0;
@@ -19,9 +19,10 @@ body {
     color: #333;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start; /* Align the content to the top, but center horizontally */
     height: 100vh;
     padding: 20px;
+    overflow-y: auto; /* Ensure that vertical scrolling works */
 }
 
 /* Container */
@@ -34,6 +35,7 @@ body {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 20px;
     overflow-x: auto; /* This will allow horizontal scrolling if needed */
+    margin-top: 30px; /* Added margin to ensure it's not too close to the top */
 }
 
 /* Header */
@@ -86,6 +88,7 @@ table th {
     top: 0; /* Keeps the header at the top while scrolling */
     z-index: 2; /* Ensures the header stays above the content */
     text-align: center; /* Center-align the header text */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Adds a slight shadow for visibility */
 }
 
 /* Table rows */
