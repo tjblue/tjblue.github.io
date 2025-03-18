@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         /* General Reset and Body */
-/* General Reset and Body */
+//* General Reset and Body */
 * {
     margin: 0;
     padding: 0;
@@ -19,7 +19,7 @@ body {
     color: #333;
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Align the content to the top, but center horizontally */
+    align-items: flex-start; /* Align content to the top */
     height: 100vh;
     padding: 20px;
     overflow-y: auto; /* Ensure that vertical scrolling works */
@@ -29,13 +29,13 @@ body {
 .container {
     width: 100%;
     max-width: 1200px;
-    margin: 20px;
+    margin: 0 auto; /* Center the table horizontally */
     background: #fff;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    overflow-x: auto; /* This will allow horizontal scrolling if needed */
-    margin-top: 30px; /* Added margin to ensure it's not too close to the top */
+    overflow-x: auto; /* Allow horizontal scrolling */
+    margin-top: 0; /* Ensure no margin at the top */
 }
 
 /* Header */
@@ -67,9 +67,7 @@ header h1 {
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
-    margin-left: auto;
-    margin-right: auto;
+    margin-top: 0; /* Remove any top margin */
 }
 
 table th,
@@ -85,10 +83,10 @@ table th {
     color: white;
     font-weight: 600;
     position: sticky;
-    top: 0; /* Keeps the header at the top while scrolling */
-    z-index: 2; /* Ensures the header stays above the content */
-    text-align: center; /* Center-align the header text */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Adds a slight shadow for visibility */
+    top: 0; /* Sticky header at the top of the table */
+    z-index: 2; /* Ensures header stays above content */
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Shadow for visibility */
 }
 
 /* Table rows */
@@ -110,6 +108,7 @@ table th, table td {
         font-size: 14px;
     }
 }
+
         
     </style>
 </head>
