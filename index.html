@@ -123,64 +123,56 @@
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 
     <script>
-        // Sample data from your CSV, you can fetch this from a file or API
-        const propertyData = [
-            {
-                distance: "1.2 miles",
-                link1: "<a href='#'>Property 1</a>",
-                link2: "<a href='#'>Property 2</a>",
-                bedrooms1: 2,
-                bathrooms1: 2,
-                type1: "Apartment",
-                bedrooms2: 3,
-                bathrooms2: 2,
-                type2: "House"
-            },
-            {
-                distance: "2.3 miles",
-                link1: "<a href='#'>Property 3</a>",
-                link2: "<a href='#'>Property 4</a>",
-                bedrooms1: 1,
-                bathrooms1: 1,
-                type1: "Condo",
-                bedrooms2: 4,
-                bathrooms2: 3,
-                type2: "Townhouse"
-            }
-            // Add more rows here
-        ];
+        // Function to load and parse the CSV file
+        function loadCSVData(csvFilePath) {
+            fetch(csvFilePath)
+                .then(response => response.text())
+                .then(csvText => {
+                    // Parse the CSV data
+                    const parsedData = Papa.parse(csvText, { header: true }).data;
 
-        // Populate the table with data
+                    // Populate the table with the parsed data
+                    populateTable(parsedData);
+                })
+                .catch(error => {
+                    console.error("Error loading CSV file:", error);
+                });
+        }
+
+        // Function to populate the table with data
         function populateTable(data) {
             const tableBody = $('#propertyTable tbody');
+            tableBody.empty(); // Clear existing rows, if any
+
             data.forEach(row => {
                 const tr = $('<tr></tr>');
-                tr.append(`<td>${row.distance}</td>`);
-                tr.append(`<td>${row.link1}</td>`);
-                tr.append(`<td>${row.link2}</td>`);
-                tr.append(`<td>${row.bedrooms1}</td>`);
-                tr.append(`<td>${row.bathrooms1}</td>`);
-                tr.append(`<td>${row.type1}</td>`);
-                tr.append(`<td>${row.bedrooms2}</td>`);
-                tr.append(`<td>${row.bathrooms2}</td>`);
-                tr.append(`<td>${row.type2}</td>`);
+                tr.append(`<td>${row.Distance}</td>`);
+                tr.append(`<td><a href="#">${row['Property Link 1']}</a></td>`);
+                tr.append(`<td><a href="#">${row['Property Link 2']}</a></td>`);
+                tr.append(`<td>${row['Property 1 Bedrooms']}</td>`);
+                tr.append(`<td>${row['Property 1 Bathrooms']}</td>`);
+                tr.append(`<td>${row['Property 1 Type']}</td>`);
+                tr.append(`<td>${row['Property 2 Bedrooms']}</td>`);
+                tr.append(`<td>${row['Property 2 Bathrooms']}</td>`);
+                tr.append(`<td>${row['Property 2 Type']}</td>`);
                 tableBody.append(tr);
             });
         }
 
-        // Initialize DataTable and populate table
+        // Initialize DataTable and load CSV data
         $(document).ready(function() {
-            // Populate the table with data
-            populateTable(propertyData);
-
             // Initialize DataTable with search and filter options
             $('#propertyTable').DataTable({
                 paging: true,
                 searching: true,
                 order: []
             });
+
+            // Load the CSV file and populate the table
+            loadCSVData('./distance_results.csv');
         });
     </script>
 </body>
