@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Muscle Meal Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #080C10;
+    --surface: #0F1318;
+    --surface2: #161C24;
+    --border: #1E2530;
+    --border2: #252D38;
+    --green: #00D084;
+    --green-dim: #00D08422;
+    --amber: #F59E0B;
+    --red: #EF4444;
+    --pink: #F472B6;
+    --blue: #60A5FA;
+    --purple: #A78BFA;
+    --text: #E2E8F0;
+    --text2: #94A3B8;
+    --text3: #475569;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    padding-bottom: 80px;
+  }
+
+  /* NAV */
+  .nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: #0A0E14EE;
+    backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border);
+    display: flex;
+    z-index: 100;
+  }
+  .nav-btn {
+    flex: 1;
+    padding: 12px 8px 16px;
+    background: none;
+    border: none;
+    color: var(--text3);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .nav-btn.active { color: var(--green); }
+  .nav-btn .icon { font-size: 18px; }
+
+  /* PAGES */
+  .page { display: none; padding: 0 0 20px; }
+  .page.active { display: block; }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(160deg, #0a1a12 0%, #080C10 60%);
+    border-bottom: 1px solid #00D08422;
+    padding: 40px 20px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, #00D08415 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--green);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    line-height: 0.95;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+  .hero-title span { color: var(--green); }
+  .hero-sub { color: var(--text3); font-size: 13px; margin-bottom: 24px; }
+
+  /* MACRO PILLS */
+  .pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill {
+    border-radius: 99px;
+    padding: 5px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    border: 1px solid;
+  }
+
+  /* SECTION */
+  .section { padding: 24px 20px 0; }
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 14px;
+  }
+
+  /* DAILY TOTAL CARD */
+  .total-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .total-val { font-size: 24px; font-weight: 700; }
+  .total-unit { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
+  .total-lbl { font-size: 11px; color: var(--text2); margin-top: 2px; }
+
+  /* MEAL CARDS */
+  .meal-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .meal-card.open { background: var(--surface2); }
+  .meal-header { display: flex; align-items: center; justify-content: space-between; }
+  .meal-left { display: flex; align-items: center; gap: 12px; }
+  .meal-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .meal-name { font-weight: 700; font-size: 16px; }
+  .meal-time { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text3); margin-top: 2px; }
+  .meal-cal { font-size: 22px; font-weight: 700; }
+  .meal-cal-unit { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text3); text-transform: uppercase; }
+
+  .meal-pills { display: flex; gap: 6px; margin-top: 12px; }
+  .macro-pill {
+    border-radius: 99px; padding: 3px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; border: 1px solid;
+  }
+
+  .meal-detail { margin-top: 16px; }
+  .macro-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 14px; }
+  .macro-box {
+    border-radius: 10px; padding: 12px 8px; text-align: center;
+    border: 1px solid;
+  }
+  .macro-box-val { font-size: 20px; font-weight: 700; }
+  .macro-box-lbl { font-size: 11px; color: var(--text2); margin-top: 2px; }
+
+  .bar-row { margin-bottom: 8px; }
+  .bar-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--text3); margin-bottom: 3px; }
+  .bar-label span:last-child { color: var(--text); font-weight: 600; }
+  .bar-track { height: 5px; background: var(--border); border-radius: 99px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 99px; transition: width 0.5s ease; }
+
+  /* RECIPE PAGE */
+  .recipe-hero {
+    background: linear-gradient(160deg, #12100a 0%, var(--bg) 60%);
+    border-bottom: 1px solid #F59E0B22;
+    padding: 40px 20px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .recipe-hero::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 250px; height: 250px;
+    background: radial-gradient(circle, #F59E0B10 0%, transparent 70%);
+  }
+
+  /* SERVING SCALER */
+  .scaler {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .scaler-title { font-weight: 600; font-size: 15px; }
+  .scaler-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
+  .scaler-controls { display: flex; align-items: center; gap: 14px; }
+  .scaler-btn {
+    width: 34px; height: 34px; border-radius: 99px;
+    border: 1px solid var(--border2);
+    background: var(--surface2);
+    color: var(--text);
+    font-size: 20px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+  }
+  .scaler-btn.plus { background: var(--green); border-color: var(--green); color: #000; }
+  .scaler-num { font-size: 22px; font-weight: 700; min-width: 28px; text-align: center; }
+
+  /* INGREDIENTS */
+  .ingredient-row {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+  }
+  .ingredient-left { display: flex; align-items: center; gap: 10px; }
+  .dot { width: 8px; height: 8px; border-radius: 99px; flex-shrink: 0; }
+  .ingredient-name { font-size: 14px; }
+  .ingredient-amount { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--green); font-weight: 600; white-space: nowrap; margin-left: 10px; }
+
+  /* STEPS */
+  .step-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 16px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .step-card.open { background: var(--surface2); border-color: #F59E0B44; }
+  .step-header { display: flex; align-items: center; justify-content: space-between; }
+  .step-left { display: flex; align-items: center; gap: 10px; }
+  .step-num {
+    width: 28px; height: 28px; border-radius: 99px;
+    background: var(--surface2); color: var(--text3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .step-card.open .step-num { background: var(--amber); color: #000; }
+  .step-title { font-weight: 600; font-size: 14px; }
+  .step-time { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text3); }
+  .step-desc { margin-top: 12px; margin-left: 38px; font-size: 13px; color: var(--text2); line-height: 1.65; }
+
+  /* STORAGE CARD */
+  .storage-card {
+    background: #0a100d;
+    border: 1px solid #00D08433;
+    border-radius: 14px;
+    padding: 18px;
+    margin-top: 8px;
+  }
+  .storage-tip { font-size: 13px; color: var(--text2); margin-bottom: 6px; }
+
+  /* UTIL */
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <button class="nav-btn active" onclick="showPage('macros')" id="nav-macros">
+    <span class="icon">📊</span>Macros
+  </button>
+  <button class="nav-btn" onclick="showPage('lunch')" id="nav-lunch">
+    <span class="icon">🍗</span>Lunch
+  </button>
+  <button class="nav-btn" onclick="showPage('more')" id="nav-more">
+    <span class="icon">＋</span>Coming Soon
+  </button>
+</nav>
+
+<!-- ═══════════════════════════════════════════
+     PAGE: MACROS
+════════════════════════════════════════════ -->
+<div class="page active" id="page-macros">
+
+  <div class="hero">
+    <div class="hero-tag">Daily Nutrition Blueprint</div>
+    <h1 class="hero-title">Muscle<br/><span>Macros</span></h1>
+    <p class="hero-sub">180 lb · 25yo male · Hypertrophy</p>
+    <div class="pill-row">
+      <span class="pill" style="color:#EF4444;border-color:#EF444444;background:#EF444411">195g Protein</span>
+      <span class="pill" style="color:#F59E0B;border-color:#F59E0B44;background:#F59E0B11">305g Carbs</span>
+      <span class="pill" style="color:#F472B6;border-color:#F472B644;background:#F472B611">78g Fat</span>
+      <span class="pill" style="color:#00D084;border-color:#00D08444;background:#00D08411">2,700 kcal</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Daily Totals</div>
+    <div class="total-card">
+      <div>
+        <div class="total-val" style="color:#00D084">2,700</div>
+        <div class="total-unit">kcal</div>
+        <div class="total-lbl">Calories</div>
+      </div>
+      <div>
+        <div class="total-val" style="color:#EF4444">195g</div>
+        <div class="total-unit">grams</div>
+        <div class="total-lbl">Protein</div>
+      </div>
+      <div>
+        <div class="total-val" style="color:#F59E0B">305g</div>
+        <div class="total-unit">grams</div>
+        <div class="total-lbl">Carbs</div>
+      </div>
+      <div>
+        <div class="total-val" style="color:#F472B6">78g</div>
+        <div class="total-unit">grams</div>
+        <div class="total-lbl">Fat</div>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top:8px">Meal Breakdown</div>
+
+    <!-- Breakfast -->
+    <div class="meal-card" onclick="toggleMeal(this, '#F59E0B')" data-open="false">
+      <div class="meal-header">
+        <div class="meal-left">
+          <div class="meal-icon" style="background:#F59E0B18">🍳</div>
+          <div>
+            <div class="meal-name">Breakfast</div>
+            <div class="meal-time">7 – 9 AM</div>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div class="meal-cal" style="color:#F59E0B">700</div>
+          <div class="meal-cal-unit">kcal</div>
+        </div>
+      </div>
+      <div class="meal-pills">
+        <span class="macro-pill" style="color:#EF4444;border-color:#EF444433;background:#EF444411">P 55g</span>
+        <span class="macro-pill" style="color:#F59E0B;border-color:#F59E0B33;background:#F59E0B11">C 75g</span>
+        <span class="macro-pill" style="color:#F472B6;border-color:#F472B633;background:#F472B611">F 20g</span>
+      </div>
+      <div class="meal-detail hidden">
+        <div class="macro-grid">
+          <div class="macro-box" style="color:#EF4444;border-color:#EF444433;background:#EF444411"><div class="macro-box-val">55g</div><div class="macro-box-lbl">Protein</div></div>
+          <div class="macro-box" style="color:#F59E0B;border-color:#F59E0B33;background:#F59E0B11"><div class="macro-box-val">75g</div><div class="macro-box-lbl">Carbs</div></div>
+          <div class="macro-box" style="color:#F472B6;border-color:#F472B633;background:#F472B611"><div class="macro-box-val">20g</div><div class="macro-box-lbl">Fat</div></div>
+        </div>
+        <div class="bar-row"><div class="bar-label"><span>Protein</span><span>55g</span></div><div class="bar-track"><div class="bar-fill" style="width:28%;background:#EF4444"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>Carbs</span><span>75g</span></div><div class="bar-track"><div class="bar-fill" style="width:25%;background:#F59E0B"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>Fat</span><span>20g</span></div><div class="bar-track"><div class="bar-fill" style="width:26%;background:#F472B6"></div></div></div>
+        <p style="font-family:monospace;font-size:11px;color:var(--text3);text-align:center;margin-top:12px">26% of daily calories</p>
+      </div>
+    </div>
+
+    <!-- Lunch -->
+    <div class="meal-card" onclick="toggleMeal(this, '#00D084')" data-open="false">
+      <div class="meal-header">
+        <div class="meal-left">
+          <div class="meal-icon" style="background:#00D08418">🍗</div>
+          <div>
+            <div class="meal-name">Lunch</div>
+            <div class="meal-time">12 – 1 PM</div>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div class="meal-cal" style="color:#00D084">1,000</div>
+          <div class="meal-cal-unit">kcal</div>
+        </div>
+      </div>
+      <div class="meal-pills">
+        <span class="macro-pill" style="color:#EF4444;border-color:#EF444433;background:#EF444411">P 70g</span>
+        <span class="macro-pill" style="color:#F59E0B;border-color:#F59E0B33;background:#F59E0B11">C 115g</span>
+        <span class="macro-pill" style="color:#F472B6;border-color:#F472B633;background:#F472B611">F 28g</span>
+      </div>
+      <div class="meal-detail hidden">
+        <div class="macro-grid">
+          <div class="macro-box" style="color:#EF4444;border-color:#EF444433;background:#EF444411"><div class="macro-box-val">70g</div><div class="macro-box-lbl">Protein</div></div>
+          <div class="macro-box" style="color:#F59E0B;border-color:#F59E0B33;background:#F59E0B11"><div class="macro-box-val">115g</div><div class="macro-box-lbl">Carbs</div></div>
+          <div class="macro-box" style="color:#F472B6;border-color:#F472B633;background:#F472B611"><div class="macro-box-val">28g</div><div class="macro-box-lbl">Fat</div></div>
+        </div>
+        <div class="bar-row"><div class="bar-label"><span>Protein</span><span>70g</span></div><div class="bar-track"><div class="bar-fill" style="width:36%;background:#EF4444"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>Carbs</span><span>115g</span></div><div class="bar-track"><div class="bar-fill" style="width:38%;background:#F59E0B"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>Fat</span><span>28g</span></div><div class="bar-track"><div class="bar-fill" style="width:36%;background:#F472B6"></div></div></div>
+        <p style="font-family:monospace;font-size:11px;color:var(--text3);text-align:center;margin-top:12px">37% of daily calories</p>
+      </div>
+    </div>
+
+    <!-- Dinner -->
+    <div class="meal-card" onclick="toggleMeal(this, '#A78BFA')" data-open="false">
+      <div class="meal-header">
+        <div class="meal-left">
+          <div class="meal-icon" style="background:#A78BFA18">🥩</div>
+          <div>
+            <div class="meal-name">Dinner</div>
+            <div class="meal-time">6 – 8 PM</div>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div class="meal-cal" style="color:#A78BFA">1,000</div>
+          <div class="meal-cal-unit">kcal</div>
+        </div>
+      </div>
+      <div class="meal-pills">
+        <span class="macro-pill" style="color:#EF4444;border-color:#EF444433;background:#EF444411">P 70g</span>
+        <span class="macro-pill" style="color:#F59E0B;border-color:#F59E0B33;background:#F59E0B11">C 115g</span>
+        <span class="macro-pill" style="color:#F472B6;border-color:#F472B633;background:#F472B611">F 30g</span>
+      </div>
+      <div class="meal-detail hidden">
+        <div class="macro-grid">
+          <div class="macro-box" style="color:#EF4444;border-color:#EF444433;background:#EF444411"><div class="macro-box-val">70g</div><div class="macro-box-lbl">Protein</div></div>
+          <div class="macro-box" style="color:#F59E0B;border-color:#F59E0B33;background:#F59E0B11"><div class="macro-box-val">115g</div><div class="macro-box-lbl">Carbs</div></div>
+          <div class="macro-box" style="color:#F472B6;border-color:#F472B633;background:#F472B611"><div class="macro-box-val">30g</div><div class="macro-box-lbl">Fat</div></div>
+        </div>
+        <div class="bar-row"><div class="bar-label"><span>Protein</span><span>70g</span></div><div class="bar-track"><div class="bar-fill" style="width:36%;background:#EF4444"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>Carbs</span><span>115g</span></div><div class="bar-track"><div class="bar-fill" style="width:38%;background:#F59E0B"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>Fat</span><span>30g</span></div><div class="bar-track"><div class="bar-fill" style="width:38%;background:#F472B6"></div></div></div>
+        <p style="font-family:monospace;font-size:11px;color:var(--text3);text-align:center;margin-top:12px">37% of daily calories</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE: LUNCH RECIPE
+════════════════════════════════════════════ -->
+<div class="page" id="page-lunch">
+
+  <div class="recipe-hero">
+    <div class="hero-tag" style="color:#F59E0B">Lunch · Meal Prep · 7 Servings</div>
+    <h1 class="hero-title" style="font-size:44px">Chipotle<br/><span style="color:#F59E0B">Chicken Bowl</span></h1>
+    <p class="hero-sub">Baked thighs · cilantro rice · black beans · fajita veggies</p>
+    <div class="pill-row">
+      <span class="pill" style="color:#EF4444;border-color:#EF444444;background:#EF444411">70g Protein</span>
+      <span class="pill" style="color:#F59E0B;border-color:#F59E0B44;background:#F59E0B11">115g Carbs</span>
+      <span class="pill" style="color:#F472B6;border-color:#F472B644;background:#F472B611">28g Fat</span>
+      <span class="pill" style="color:#00D084;border-color:#00D08444;background:#00D08411">1,000 kcal</span>
+    </div>
+  </div>
+
+  <div class="section">
+
+    <!-- Scaler -->
+    <div class="scaler">
+      <div>
+        <div class="scaler-title">Servings</div>
+        <div class="scaler-sub">All amounts scale automatically</div>
+      </div>
+      <div class="scaler-controls">
+        <button class="scaler-btn" onclick="changeServings(-1)">−</button>
+        <span class="scaler-num" id="serving-count">7</span>
+        <button class="scaler-btn plus" onclick="changeServings(1)">+</button>
+      </div>
+    </div>
+
+    <!-- Ingredients -->
+    <div class="section-label">Ingredients</div>
+    <div id="ingredients-list"></div>
+
+    <!-- Steps -->
+    <div class="section-label" style="margin-top:8px">Instructions</div>
+
+    <div class="step-card" onclick="toggleStep(this)">
+      <div class="step-header">
+        <div class="step-left">
+          <div class="step-num">1</div>
+          <div class="step-title">Marinate the Chicken</div>
+        </div>
+        <span class="step-time">⏱ 15 min</span>
+      </div>
+      <div class="step-desc hidden">Combine olive oil, chili powder, cumin, garlic powder, smoked paprika, salt, and lime juice in a large bowl. Add chicken thighs and toss to coat. Let marinate while you prep everything else — or overnight in the fridge for deeper flavor.</div>
+    </div>
+
+    <div class="step-card" onclick="toggleStep(this)">
+      <div class="step-header">
+        <div class="step-left">
+          <div class="step-num">2</div>
+          <div class="step-title">Cook the Rice</div>
+        </div>
+        <span class="step-time">⏱ 18 min</span>
+      </div>
+      <div class="step-desc hidden">Combine white rice and chicken broth in a large pot. Bring to a boil, reduce to low, cover and simmer until fully absorbed and fluffy. Fluff with a fork and stir in half the cilantro.</div>
+    </div>
+
+    <div class="step-card" onclick="toggleStep(this)">
+      <div class="step-header">
+        <div class="step-left">
+          <div class="step-num">3</div>
+          <div class="step-title">Cook the Fajita Veggies</div>
+        </div>
+        <span class="step-time">⏱ 10 min</span>
+      </div>
+      <div class="step-desc hidden">Heat a large skillet or cast iron over medium-high heat. Add bell peppers and onions with a pinch of salt. Cook stirring occasionally until softened and slightly charred. Set aside.</div>
+    </div>
+
+    <div class="step-card" onclick="toggleStep(this)">
+      <div class="step-header">
+        <div class="step-left">
+          <div class="step-num">4</div>
+          <div class="step-title">Bake the Chicken</div>
+        </div>
+        <span class="step-time">⏱ 25–30 min</span>
+      </div>
+      <div class="step-desc hidden">Preheat oven to 425°F. Line a large sheet pan with foil or parchment. Spread all marinated chicken thighs in a single layer — no batching needed. Bake 25–30 minutes until internal temp reaches 165°F. Rest 5 minutes then slice or chop.</div>
+    </div>
+
+    <div class="step-card" onclick="toggleStep(this)">
+      <div class="step-header">
+        <div class="step-left">
+          <div class="step-num">5</div>
+          <div class="step-title">Warm the Beans</div>
+        </div>
+        <span class="step-time">⏱ 5 min</span>
+      </div>
+      <div class="step-desc hidden">In a small pot, warm black beans over medium heat with a pinch of cumin and salt until heated through.</div>
+    </div>
+
+    <div class="step-card" onclick="toggleStep(this)">
+      <div class="step-header">
+        <div class="step-left">
+          <div class="step-num">6</div>
+          <div class="step-title">Assemble Containers</div>
+        </div>
+        <span class="step-time">⏱ 10 min</span>
+      </div>
+      <div class="step-desc hidden">Divide evenly across all containers: rice first, then chicken, beans, and fajita veggies. Top with shredded cheese and remaining cilantro. Squeeze extra lime if desired. Cool fully before sealing.</div>
+    </div>
+
+    <!-- Storage -->
+    <div class="section-label" style="margin-top:8px">Storage & Reheating</div>
+    <div class="storage-card">
+      <div class="storage-tip">🧊 Fridge: up to 5 days sealed</div>
+      <div class="storage-tip">❄️ Freeze meals 6–7 if needed</div>
+      <div class="storage-tip">🔥 Reheat 2–3 min microwave with splash of water</div>
+      <div class="storage-tip">🌶 Add salsa or hot sauce — zero extra macros</div>
+      <div class="storage-tip">🐔 Swap thighs for breast to cut ~5g fat</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE: COMING SOON
+════════════════════════════════════════════ -->
+<div class="page" id="page-more">
+  <div class="hero" style="background:linear-gradient(160deg,#0e0a18 0%,var(--bg) 60%)">
+    <div class="hero-tag" style="color:#A78BFA">More Meals</div>
+    <h1 class="hero-title">Breakfast<br/><span style="color:#A78BFA">& Dinner</span></h1>
+    <p class="hero-sub">Recipes coming soon — check back after we build them out.</p>
+  </div>
+  <div class="section" style="padding-top:32px">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;text-align:center">
+      <div style="font-size:48px;margin-bottom:12px">🚧</div>
+      <div style="font-weight:700;font-size:18px;margin-bottom:8px">Coming Soon</div>
+      <div style="color:var(--text2);font-size:14px;line-height:1.6">Breakfast and dinner meal prep recipes will be added here. Pick a dinner and we'll build it out next.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // NAV
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    document.getElementById('nav-' + id).classList.add('active');
+  }
+
+  // MEAL CARD TOGGLE
+  function toggleMeal(card, color) {
+    const isOpen = card.dataset.open === 'true';
+    const detail = card.querySelector('.meal-detail');
+    const pills = card.querySelector('.meal-pills');
+    card.dataset.open = !isOpen;
+    card.classList.toggle('open', !isOpen);
+    card.style.borderColor = !isOpen ? color + '66' : '';
+    detail.classList.toggle('hidden', isOpen);
+    pills.classList.toggle('hidden', !isOpen);
+  }
+
+  // STEP TOGGLE
+  function toggleStep(card) {
+    const desc = card.querySelector('.step-desc');
+    const isOpen = card.classList.contains('open');
+    card.classList.toggle('open', !isOpen);
+    desc.classList.toggle('hidden', isOpen);
+  }
+
+  // INGREDIENTS DATA
+  const BASE = 7;
+  const ingredients = [
+    { cat: '#EF4444', name: 'Boneless skinless chicken thighs', base: 84, unit: 'oz' },
+    { cat: '#F59E0B', name: 'Dry white rice', base: 3.5, unit: 'cups' },
+    { cat: '#F59E0B', name: 'Canned black beans (drained)', base: 42, unit: 'oz' },
+    { cat: '#10B981', name: 'Bell peppers, sliced', base: 7, unit: '' },
+    { cat: '#10B981', name: 'Yellow onion, sliced', base: 2, unit: '' },
+    { cat: '#F472B6', name: 'Olive oil', base: 3.5, unit: 'tbsp' },
+    { cat: '#8B5CF6', name: 'Chili powder', base: 3.5, unit: 'tsp' },
+    { cat: '#8B5CF6', name: 'Cumin', base: 3.5, unit: 'tsp' },
+    { cat: '#8B5CF6', name: 'Garlic powder', base: 1.75, unit: 'tsp' },
+    { cat: '#8B5CF6', name: 'Smoked paprika', base: 1.75, unit: 'tsp' },
+    { cat: '#8B5CF6', name: 'Salt', base: 2, unit: 'tsp' },
+    { cat: '#06B6D4', name: 'Lime juice', base: 3.5, unit: 'tbsp' },
+    { cat: '#06B6D4', name: 'Fresh cilantro, chopped', base: 0.5, unit: 'cup' },
+    { cat: '#F472B6', name: 'Shredded Mexican cheese blend', base: 7, unit: 'oz' },
+    { cat: '#60A5FA', name: 'Chicken broth (for rice)', base: 7, unit: 'cups' },
+  ];
+
+  let servings = 7;
+
+  function fmt(n) {
+    const r = Math.round(n * 100) / 100;
+    return Number.isInteger(r) ? r : parseFloat(r.toFixed(2));
+  }
+
+  function renderIngredients() {
+    const ratio = servings / BASE;
+    const list = document.getElementById('ingredients-list');
+    list.innerHTML = ingredients.map(ing => {
+      const amt = fmt(ing.base * ratio);
+      const display = ing.unit ? `${amt} ${ing.unit}` : amt;
+      return `<div class="ingredient-row">
+        <div class="ingredient-left">
+          <div class="dot" style="background:${ing.cat}"></div>
+          <span class="ingredient-name">${ing.name}</span>
+        </div>
+        <span class="ingredient-amount">${display}</span>
+      </div>`;
+    }).join('');
+  }
+
+  function changeServings(delta) {
+    servings = Math.max(1, servings + delta);
+    document.getElementById('serving-count').textContent = servings;
+    renderIngredients();
+  }
+
+  renderIngredients();
+</script>
+</body>
+</html>
